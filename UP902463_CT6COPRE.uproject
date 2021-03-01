@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.26",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "UP902463_CT6COPRE",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
