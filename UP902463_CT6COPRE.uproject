@@ -7,7 +7,10 @@
 		{
 			"Name": "UP902463_CT6COPRE",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	]
 }
