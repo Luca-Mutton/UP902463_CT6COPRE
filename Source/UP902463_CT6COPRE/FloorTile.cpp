@@ -5,8 +5,13 @@
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
 #include "UP902463_CT6COPREGameMode.h"
+#include "Obstacle.h"
+#include "Coin.h"
 #include <UP902463_CT6COPRE/UP902463Character.h>
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+#include <Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
+
+
 
 // Sets default values
 AFloorTile::AFloorTile()
@@ -54,26 +59,32 @@ void AFloorTile::BeginPlay()
 	FloorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AFloorTile::OnTriggerBoxOverlap);
 }
 
-// Called every frame
-void AFloorTile::Tick(float DeltaTime)
+void AFloorTile::SpawnItems()
 {
-	Super::Tick(DeltaTime);
-
+	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinClass))
+	{
+		SpawnLaneItem(CentreLane);
+		SpawnLaneItem(LeftLane);
+		SpawnLaneItem(RightLane);
+	}	
 }
 
+//overlap evvent taht destroys a tile when character triggers the event
 void AFloorTile::OnTriggerBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AUP902463Character* RunnerCharacter = Cast<AUP902463Character>(OtherActor);
 
 	if(RunnerCharacter)
 	{
-		CT6COPREGameMode->AddFloorTile();
+		CT6COPREGameMode->AddFloorTile(true);
 
 		GetWorldTimerManager().SetTimer(DestroyHandle, this, &AFloorTile::DestroyFloorTile, 2.f, false);
 
 	}
 }
 
+
+//destro tile function
 void AFloorTile::DestroyFloorTile()
 {
 	if (DestroyHandle.IsValid())
@@ -82,4 +93,28 @@ void AFloorTile::DestroyFloorTile()
 	}
 
 	this->Destroy();
+}
+
+void AFloorTile::SpawnLaneItem(UArrowComponent* Lane)
+{
+	const float RandVal = FMath::FRandRange(0.f, 1.f);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	const FTransform& SpawnLocation = Lane->GetComponentTransform();
+
+	if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent1, SpawnPercent2, true, true))
+	{
+		AObstacle* Obstacle = GetWorld()->SpawnActor<AObstacle>(SmallObstacleClass, SpawnLocation, SpawnParameters);
+	}
+
+	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent2, SpawnPercent3, true, true))
+	{
+		AObstacle* Obstacle = GetWorld()->SpawnActor<AObstacle>(BigObstacleClass, SpawnLocation, SpawnParameters);
+	}
+
+	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent3, 1.f, true, true))
+	{
+		ACoin* Coin = GetWorld()->SpawnActor<ACoin>(CoinClass, SpawnLocation, SpawnParameters);
+	}
 }

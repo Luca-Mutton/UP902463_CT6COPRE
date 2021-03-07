@@ -3,7 +3,12 @@
 
 #include "UP902463Character.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "UP902463_CT6COPREGameMode.h"
+#include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
+
+
 
 // Sets default values
 AUP902463Character::AUP902463Character()
@@ -26,9 +31,21 @@ AUP902463Character::AUP902463Character()
 void AUP902463Character::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CT6COPREGameMode = Cast<AUP902463_CT6COPREGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	check(CT6COPREGameMode);
 	
 }
 
+
+
+
+void AUP902463Character::AddCoin()
+{
+
+	CT6COPREGameMode->AddCoin();
+}
 
 // Called every frame
 void AUP902463Character::Tick(float DeltaTime)
@@ -41,6 +58,51 @@ void AUP902463Character::Tick(float DeltaTime)
 	ControlRot.Pitch = 0.f;
 	
 	AddMovementInput(ControlRot.Vector());
+}
+
+
+void AUP902463Character::ChangeLaneUpdate(const float Value)
+{
+	FVector Location = GetCapsuleComponent()->GetComponentLocation();
+	Location.Y = FMath::Lerp(CT6COPREGameMode->LaneSwitchValue[CurrentLane], CT6COPREGameMode->LaneSwitchValue[NextLane], Value);
+	SetActorLocation(Location);
+}
+
+void AUP902463Character::ChangeLaneFinished()
+{
+	CurrentLane = NextLane;
+}
+
+void AUP902463Character::Death()
+{
+	UWorld* World = GetWorld();
+
+	if (!bIsDead)
+	{
+		if (World)
+		{
+			bIsDead = true;
+			DisableInput(nullptr);
+
+			GetMesh()->SetVisibility(false);
+			World->GetTimerManager().SetTimer(RestartTimerHandle, this, &AUP902463Character::OnDeath, 1.f);
+		}
+	}
+
+	
+	
+}
+
+void AUP902463Character::OnDeath()
+{
+	bIsDead = false;
+
+	if (RestartTimerHandle.IsValid())
+	{
+		GetWorldTimerManager().ClearTimer(RestartTimerHandle);
+	}
+
+	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(), TEXT("RestartLevel"));
 }
 
 // Called to bind functionality to input
@@ -59,12 +121,14 @@ void AUP902463Character::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AUP902463Character::MoveLeft()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Move Left"));
+	NextLane = FMath::Clamp(CurrentLane - 1, 0, 2);
+	ChangeLane();
 }
 
 void AUP902463Character::MoveRight()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Move Right"));
+	NextLane = FMath::Clamp(CurrentLane + 1, 0, 2);
+	ChangeLane();
 }
 
 void AUP902463Character::MoveDown()

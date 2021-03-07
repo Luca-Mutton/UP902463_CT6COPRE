@@ -18,14 +18,40 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
+	UPROPERTY(VisibleInstanceOnly)
+		class AUP902463_CT6COPREGameMode* CT6COPREGameMode;
+
 
 public:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+		int32 CurrentLane = 1; 
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+		int32 NextLane = 0;
+
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Lane")
+		void ChangeLane();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Lane")
+		void ChangeLaneUpdate(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Lane")
+		void ChangeLaneFinished();
+
+	UFUNCTION(BlueprintCallable)
+		void Death();
+
 	// Sets default values for this character's properties
 	AUP902463Character();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+		void OnDeath();
 
 	UFUNCTION()
 		void MoveLeft();
@@ -36,7 +62,16 @@ protected:
 	UFUNCTION()
 		void MoveDown();
 
+	UPROPERTY()
+		FTimerHandle RestartTimerHandle;
+
+	UPROPERTY()
+		bool bIsDead = false;
+
 public:	
+
+	UFUNCTION()
+		void AddCoin();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
