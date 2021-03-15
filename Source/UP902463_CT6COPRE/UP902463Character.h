@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 		int32 NextLane = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float MoveDownImpulse = -1000.f;
+
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Lane")
 		void ChangeLane();
@@ -72,6 +75,10 @@ public:
 
 	UFUNCTION()
 		void AddCoin();
+
+	UFUNCTION()
+		void UpdateDistance();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

@@ -8,6 +8,22 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameHUDWidget.h"
 
+
+void AUP902463_CT6COPREGameMode::BeginPlay()
+{
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+
+	GameHUD = Cast<UGameHUDWidget>(CreateWidget(GetWorld(), GameHUDClass));
+	check(GameHUD);
+
+	GameHUD->InitailizeHUD(this);
+	GameHUD->AddToViewport();
+	//GameHUD->UpdateDistance(CurrentDistance);
+
+	CreateInitialFloorTiles();
+}
+
+//Create the first tiles that spawn in a level
 void AUP902463_CT6COPREGameMode::CreateInitialFloorTiles()
 {
 
@@ -57,20 +73,9 @@ void AUP902463_CT6COPREGameMode::AddCoin()
 {
 	TotalCoins += 1;
 
-	UE_LOG(LogTemp, Warning, TEXT("TOTAL COINS: %d"), TotalCoins);
+	OnCoinsCountChanged.Broadcast(TotalCoins);
 }
 
-void AUP902463_CT6COPREGameMode::BeginPlay()
-{
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
-
-	GameHUD = Cast<UGameHUDWidget>(CreateWidget(GetWorld(), GameHUDClass));
-	check(GameHUD);
-
-	GameHUD->AddToViewport();
-
-	CreateInitialFloorTiles();
-}
 
 AUP902463_CT6COPREGameMode::AUP902463_CT6COPREGameMode()
 {
@@ -81,3 +86,14 @@ AUP902463_CT6COPREGameMode::AUP902463_CT6COPREGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
+
+void AUP902463_CT6COPREGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Distance += DeltaTime;
+
+	OnDistanceChanged.Broadcast(Distance);
+}
+
+

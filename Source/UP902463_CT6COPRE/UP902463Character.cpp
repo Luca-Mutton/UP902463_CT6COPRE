@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "UP902463_CT6COPREGameMode.h"
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
@@ -45,6 +46,11 @@ void AUP902463Character::AddCoin()
 {
 
 	CT6COPREGameMode->AddCoin();
+}
+
+void AUP902463Character::UpdateDistance()
+{
+	CT6COPREGameMode->AddDistance();
 }
 
 // Called every frame
@@ -133,5 +139,7 @@ void AUP902463Character::MoveRight()
 
 void AUP902463Character::MoveDown()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Move Down"));
+	static FVector Impulse = FVector(0, 0, MoveDownImpulse);
+
+	GetCharacterMovement()->AddImpulse(Impulse, true);
 }

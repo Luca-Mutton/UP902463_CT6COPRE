@@ -84,7 +84,7 @@ protected:
 		void DestroyFloorTile();
 
 	UFUNCTION()
-		void SpawnLaneItem(UArrowComponent* Lane);
+		void SpawnLaneItem(UArrowComponent* Lane, int32& NumBigs);
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
