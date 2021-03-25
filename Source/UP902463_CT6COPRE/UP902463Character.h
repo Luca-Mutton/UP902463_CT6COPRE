@@ -12,12 +12,17 @@ class UP902463_CT6COPRE_API AUP902463Character : public ACharacter
 	GENERATED_BODY()
 
 private:
+	//spring arm component to attach the camera to the character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraArm;
 
+
+	//Camera mesh for the character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
+
+	//reference to GAMEHUD
 	UPROPERTY(VisibleInstanceOnly)
 		class AUP902463_CT6COPREGameMode* CT6COPREGameMode;
 
@@ -71,13 +76,17 @@ protected:
 	UPROPERTY()
 		bool bIsDead = false;
 
+
 public:	
+
+	UFUNCTION()
+		void AddEnemy();
 
 	UFUNCTION()
 		void AddCoin();
 
-	UFUNCTION()
-		void UpdateDistance();
+	//UFUNCTION()
+	//	void UpdateDistance();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

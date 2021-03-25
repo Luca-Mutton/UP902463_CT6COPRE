@@ -24,6 +24,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* DistanceCounter;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* EnemyScore;
+
 public:
 	UFUNCTION(BlueprintCallable)
 		void InitailizeHUD(AUP902463_CT6COPREGameMode* GameMode);
@@ -32,8 +35,8 @@ public:
 		void SetCoinsCount(int32 Count);
 
 	UFUNCTION(BlueprintCallable)
-		void SetDistance(float distance);
+		void SetEnemyCount(int32 Count);
 
 	UFUNCTION(BlueprintCallable)
-		void UpdateDistance(float Distance);
+		void UpdateDistance(int32 Distance);
 };

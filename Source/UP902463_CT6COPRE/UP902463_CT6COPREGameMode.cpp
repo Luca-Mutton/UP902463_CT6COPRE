@@ -18,7 +18,7 @@ void AUP902463_CT6COPREGameMode::BeginPlay()
 
 	GameHUD->InitailizeHUD(this);
 	GameHUD->AddToViewport();
-	//GameHUD->UpdateDistance(CurrentDistance);
+	//GameHUD->UpdateDistance(this);
 
 	CreateInitialFloorTiles();
 }
@@ -76,6 +76,21 @@ void AUP902463_CT6COPREGameMode::AddCoin()
 	OnCoinsCountChanged.Broadcast(TotalCoins);
 }
 
+void AUP902463_CT6COPREGameMode::AddEnemy()
+{
+	TotalEnemy += 1;
+
+	OnEnemyCountChanged.Broadcast(TotalEnemy);
+}
+
+void AUP902463_CT6COPREGameMode::UpdateDistance()
+{
+	Distance += 1;
+
+	OnDistanceChanged.Broadcast(Distance);
+
+}
+
 
 AUP902463_CT6COPREGameMode::AUP902463_CT6COPREGameMode()
 {
@@ -87,13 +102,14 @@ AUP902463_CT6COPREGameMode::AUP902463_CT6COPREGameMode()
 	}
 }
 
-void AUP902463_CT6COPREGameMode::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+//void AUP902463_CT6COPREGameMode::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//
+//	CurrentDistance += DeltaTime;
+//
+//}
 
-	Distance += DeltaTime;
-
-	OnDistanceChanged.Broadcast(Distance);
-}
-
-
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyChanged, int32, EnemyScore)
+//{
+//}

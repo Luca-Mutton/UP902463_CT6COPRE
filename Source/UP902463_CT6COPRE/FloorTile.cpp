@@ -7,6 +7,7 @@
 #include "UP902463_CT6COPREGameMode.h"
 #include "Obstacle.h"
 #include "Coin.h"
+#include "Enemy.h"
 #include <UP902463_CT6COPRE/UP902463Character.h>
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include <Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
@@ -19,6 +20,7 @@ AFloorTile::AFloorTile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//properties for flor tile
 	SceneComponent = CreateDefaultSubobject <USceneComponent>(TEXT("Scene"));
 	RootComponent = SceneComponent;
 
@@ -59,9 +61,10 @@ void AFloorTile::BeginPlay()
 	FloorTriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AFloorTile::OnTriggerBoxOverlap);
 }
 
+
 void AFloorTile::SpawnItems()
 {
-	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinClass))
+	if (IsValid(SmallObstacleClass) && IsValid(BigObstacleClass) && IsValid(CoinClass) && IsValid(EnemyClass))
 	{
 		int32 NumBigs = 0;
 		SpawnLaneItem(CentreLane, NumBigs);
@@ -79,13 +82,14 @@ void AFloorTile::OnTriggerBoxOverlap(UPrimitiveComponent* OverlappedComponent, A
 	{
 		CT6COPREGameMode->AddFloorTile(true);
 
+		//destroys tile after a cetain amount of time
 		GetWorldTimerManager().SetTimer(DestroyHandle, this, &AFloorTile::DestroyFloorTile, 2.f, false);
 
 	}
 }
 
 
-//destro tile function
+//destroy tile function
 void AFloorTile::DestroyFloorTile()
 {
 	if (DestroyHandle.IsValid())
@@ -95,6 +99,8 @@ void AFloorTile::DestroyFloorTile()
 
 	this->Destroy();
 }
+//
+//
 
 void AFloorTile::SpawnLaneItem(UArrowComponent* Lane, int32& NumBigs)
 {
@@ -105,8 +111,9 @@ void AFloorTile::SpawnLaneItem(UArrowComponent* Lane, int32& NumBigs)
 	const FTransform& SpawnLocation = Lane->GetComponentTransform();
 
 	if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent1, SpawnPercent2, true, true))
-	{
+	{	
 		AObstacle* Obstacle = GetWorld()->SpawnActor<AObstacle>(SmallObstacleClass, SpawnLocation, SpawnParameters);
+			
 	}
 
 	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent2, SpawnPercent3, true, true))
@@ -129,5 +136,12 @@ void AFloorTile::SpawnLaneItem(UArrowComponent* Lane, int32& NumBigs)
 	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent3, 1.f, true, true))
 	{
 		ACoin* Coin = GetWorld()->SpawnActor<ACoin>(CoinClass, SpawnLocation, SpawnParameters);
+		AEnemy* Enemy = GetWorld()->SpawnActor<AEnemy>(EnemyClass, SpawnLocation, SpawnParameters); 
 	}
+
+	else if (UKismetMathLibrary::InRange_FloatFloat(RandVal, SpawnPercent4, 1.f, true, true))
+	{
+		
+	}
+
 }

@@ -13,6 +13,7 @@ class UStaticMeshComponent;
 class UBoxComponent;
 class AObstacle;
 class ACoin;
+class AEnemy;
 
 UCLASS()
 class UP902463_CT6COPRE_API AFloorTile : public AActor
@@ -29,6 +30,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 		TSubclassOf<ACoin> CoinClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		TSubclassOf<AEnemy> EnemyClass;
+
+
+	//properties for floor tile
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = "Components")
 		USceneComponent* SceneComponent;
 
@@ -50,6 +56,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = "Components")
 		UBoxComponent* FloorTriggerBox;
 
+
+	//percentages for how often one of these objects spawn
 	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Config")
 		float SpawnPercent1 = 0.1f;
 
@@ -58,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Config")
 		float SpawnPercent3 = 0.5f;
+
+	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = "Config")
+		float SpawnPercent4 = 0.7f;
 
 	UFUNCTION(BlueprintCallable)
 		void SpawnItems();

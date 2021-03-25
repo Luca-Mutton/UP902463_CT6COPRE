@@ -10,7 +10,8 @@ class AFloorTile;
 class UUserWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCoinsCountChanged, int32, Score);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDistanceChanged, float, DistanceCounter);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnemyCountChanged, int32, EnemyScore);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDistanceChanged, int32, DistanceCounter);
 
 UCLASS(minimalapi)
 class AUP902463_CT6COPREGameMode : public AGameModeBase
@@ -45,6 +46,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void AddCoin();
 
+	UFUNCTION(BlueprintCallable)
+		void AddEnemy();
+
+	UFUNCTION(BlueprintCallable)
+		void UpdateDistance();
+
+
+	UPROPERTY(VisibleAnywhere)
+		int32 TotalEnemy = 0;
 
 	UPROPERTY(VisibleAnywhere)
 		int32 TotalCoins = 0;
@@ -56,6 +66,9 @@ public:
 		FOnCoinsCountChanged OnCoinsCountChanged;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
+		FOnEnemyCountChanged OnEnemyCountChanged;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Delegates")
 		FOnDistanceChanged OnDistanceChanged;
 
 protected:
@@ -63,12 +76,12 @@ protected:
 
 	AUP902463_CT6COPREGameMode();
 
-private:
-	//float CurrentDistance;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+//private:
+//	float CurrentDistance;
+//
+//public:
+//	 Called every frame
+//	virtual void Tick(float DeltaTime) override;
 };
 
 

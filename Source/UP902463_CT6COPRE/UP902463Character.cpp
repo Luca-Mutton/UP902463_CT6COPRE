@@ -42,16 +42,20 @@ void AUP902463Character::BeginPlay()
 
 
 
+void AUP902463Character::AddEnemy()
+{
+	CT6COPREGameMode->AddEnemy();
+}
+
 void AUP902463Character::AddCoin()
 {
-
 	CT6COPREGameMode->AddCoin();
 }
 
-void AUP902463Character::UpdateDistance()
-{
-	CT6COPREGameMode->AddDistance();
-}
+//void AUP902463Character::UpdateDistance()
+//{
+//	CT6COPREGameMode->UpdateDistance();
+//}
 
 // Called every frame
 void AUP902463Character::Tick(float DeltaTime)
@@ -62,6 +66,8 @@ void AUP902463Character::Tick(float DeltaTime)
 
 	ControlRot.Roll = 0.f;
 	ControlRot.Pitch = 0.f;
+
+	CT6COPREGameMode->UpdateDistance();
 	
 	AddMovementInput(ControlRot.Vector());
 }
@@ -79,6 +85,7 @@ void AUP902463Character::ChangeLaneFinished()
 	CurrentLane = NextLane;
 }
 
+//destroys character
 void AUP902463Character::Death()
 {
 	UWorld* World = GetWorld();
@@ -99,6 +106,7 @@ void AUP902463Character::Death()
 	
 }
 
+//restarts the level and respawns character
 void AUP902463Character::OnDeath()
 {
 	bIsDead = false;
@@ -125,18 +133,23 @@ void AUP902463Character::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("MoveDown", IE_Pressed, this, &AUP902463Character::MoveDown);
 }
 
+
+//move to new lane on the left
 void AUP902463Character::MoveLeft()
 {
 	NextLane = FMath::Clamp(CurrentLane - 1, 0, 2);
 	ChangeLane();
 }
 
+
+//move to new lane on the right
 void AUP902463Character::MoveRight()
 {
 	NextLane = FMath::Clamp(CurrentLane + 1, 0, 2);
 	ChangeLane();
 }
 
+//makes the character move downwards whilst jumping
 void AUP902463Character::MoveDown()
 {
 	static FVector Impulse = FVector(0, 0, MoveDownImpulse);
